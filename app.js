@@ -428,8 +428,6 @@
     el("saveBtn").textContent = "Zapisz";
 
     el("dt").value = nowLocalInputValue();
-    el("entryType").value = "log";
-
     el("sys").value = "";
     el("dia").value = "";
     el("pulse").value = "";
@@ -470,8 +468,6 @@
 
     return {
       dt: dtISO,
-      entryType: el("entryType").value,
-
       sys: safeNum(el("sys").value),
       dia: safeNum(el("dia").value),
       pulse: safeNum(el("pulse").value),
@@ -499,7 +495,6 @@
     const d = new Date(item.dt);
     el("dt").value = Number.isNaN(d.getTime()) ? nowLocalInputValue() : toLocalInput(d);
 
-    el("entryType").value = item.entryType ?? "log";
     el("sys").value = item.sys ?? "";
     el("dia").value = item.dia ?? "";
     el("pulse").value = item.pulse ?? "";
@@ -573,7 +568,6 @@
   function buildSearchBlob(item){
     const medsText = item.medications ? JSON.stringify(item.medications) : "";
     return normalizeText([
-      item.entryType,
       item.food,
       item.waterMl, item.hydration,
       item.events, item.sleep, item.substances,
@@ -667,7 +661,7 @@
       const left = document.createElement("div");
       left.innerHTML = `
         <div class="when">${formatWhen(it.dt)}</div>
-        <div class="small">Typ: ${escapeHtml(it.entryType || "-")} | Sev: ${it.severity ?? "-"} | Anx: ${it.anxiety ?? "-"}</div>
+        <div class="small">Sev: ${it.severity ?? "-"} | Anx: ${it.anxiety ?? "-"}</div>
       `;
 
       meta.appendChild(left);
