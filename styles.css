@@ -218,6 +218,14 @@ h1{ font-size: 16px; margin:0; font-weight:700; }
 .muted{ opacity: .72; }
 
 .block{ display:grid; gap: 10px; }
+.modeRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+.modeTitle{ font-weight: 700; font-size: 13px; }
 .hr{ height: 1px; background: var(--border); margin: 14px 0; }
 
 label{ font-size: 12px; font-weight: 650; opacity: .92; }
@@ -371,6 +379,52 @@ input[type="range"]{
   height: 22px;
   background: transparent;
   border: 0;
+}
+
+.switch{
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+}
+
+.switch input{
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch .slider{
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--input);
+  border: 1px solid var(--inputBorder);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.switch .slider::before{
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  top: 50%;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  transform: translateY(-50%);
+  transition: transform 0.2s ease;
+}
+
+.switch input:checked + .slider{
+  background: var(--accentSoft);
+  border-color: rgba(20,184,166,.35);
+}
+
+.switch input:checked + .slider::before{
+  transform: translateX(20px) translateY(-50%);
 }
 
 .medChecklist{ display:grid; gap: 10px; }
