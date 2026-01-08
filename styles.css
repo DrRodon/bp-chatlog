@@ -383,11 +383,85 @@ input[type="range"]{
   display:flex;
   justify-content:space-between;
   gap: 12px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
-.medItem .left{ display:grid; gap: 4px; }
-.medItem .name{ font-weight: 800; }
+.medItem .left{
+  display:grid;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.medItem .name{
+  font-weight: 800;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.medNameText{
+  display: inline-block;
+  max-width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+.tooltipTrigger{
+  position: relative;
+  cursor: help;
+  overflow: visible;
+}
+
+.tooltipTrigger::after{
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  z-index: 20;
+}
+
+.tooltipTrigger::before{
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 100%;
+  margin-top: 2px;
+  border: 6px solid transparent;
+  border-bottom-color: var(--panel);
+  filter: drop-shadow(0 -1px 0 var(--border));
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  z-index: 21;
+}
+
+.tooltipTrigger:hover::after,
+.tooltipTrigger:hover::before{
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .badge{
   font-family: var(--mono);
@@ -405,6 +479,8 @@ input[type="range"]{
   display:flex;
   align-items:center;
   gap: 10px;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
 }
 
 .seg{

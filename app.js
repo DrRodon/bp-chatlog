@@ -134,13 +134,14 @@
 
     box.innerHTML = "";
     meds.forEach(m => {
+      const tooltip = [m.name, m.dose, m.defaultTime].filter(Boolean).join(" | ");
       const row = document.createElement("div");
       row.className = "medItem";
 
       const left = document.createElement("div");
       left.className = "left";
       left.innerHTML = `
-        <div class="name">${escapeHtml(m.name)} ${m.dose ? `<span class="badge">${escapeHtml(m.dose)}</span>` : ""}</div>
+        <div class="name tooltipTrigger" data-tooltip="${escapeHtml(tooltip || m.name || "")}"><span class="medNameText">${escapeHtml(m.name)}</span> ${m.dose ? `<span class="badge">${escapeHtml(m.dose)}</span>` : ""}</div>
         <div class="hint">${m.defaultTime ? `domyślnie ${escapeHtml(m.defaultTime)}` : "bez domyślnej godziny"}</div>
       `;
 
