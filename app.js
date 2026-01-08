@@ -124,6 +124,29 @@
     }
   }
 
+  function parseMedStatus(v){
+    if(v == null || v === "") return { state: "none", mult: 0 };
+    if(typeof v === "number"){
+      if(v > 0) return { state: "taken", mult: v };
+      if(v < 0) return { state: "missed", mult: Math.abs(v) };
+      return { state: "none", mult: 0 };
+    }
+    const s = String(v);
+    if(/^[-+]?\d+(\.\d+)?$/.test(s)){
+      const num = Number(s);
+      if(num > 0) return { state: "taken", mult: num };
+      if(num < 0) return { state: "missed", mult: Math.abs(num) };
+      return { state: "none", mult: 0 };
+    }
+    if(s.startsWith("taken")){
+      const parts = s.split(":");
+      const mult = Number(parts[1]);
+      return { state: "taken", mult: Number.isFinite(mult) && mult > 0 ? mult : 1 };
+    }
+    if(s === "missed" || s === "late") return { state: "missed", mult: 1 };
+    return { state: "none", mult: 0 };
+  }
+
   function chartSvg(series){
     const w = 320;
     const h = 80;
@@ -267,8 +290,9 @@
         for(const [id, status] of Object.entries(it.medications)){
           if(!stats.has(id)) stats.set(id, { taken: 0, missed: 0 });
           const entry = stats.get(id);
-          if(status === "taken") entry.taken += 1;
-          if(status === "missed" || status === "late") entry.missed += 1;
+          const parsed = parseMedStatus(status);
+          if(parsed.state === "taken") entry.taken += parsed.mult;
+          if(parsed.state === "missed") entry.missed += parsed.mult;
         }
       }
 
@@ -335,6 +359,9 @@
     const meds = loadMedsCatalog();
     const cur = selected && typeof selected === "object" ? selected : {};
 
+    const maxMult = 4;
+    const minMult = -1;
+
     if(!meds.length){
       box.innerHTML = `<div class="small">Nie masz zdefiniowanych leków. Dodaj je w Ustawieniach.</div>`;
       return;
@@ -342,7 +369,7 @@
 
     box.innerHTML = "";
     meds.forEach(m => {
-      const prnLabel = m.prn ? "dora\u017anie" : "";
+      const prnLabel = m.prn ? "doraźnie" : "";
       const tooltip = [m.name, m.dose, prnLabel || m.defaultTime].filter(Boolean).join(" | ");
       const row = document.createElement("div");
       row.className = "medItem";
@@ -350,51 +377,63 @@
       const left = document.createElement("div");
       left.className = "left";
       left.innerHTML = `
-        <div class="name tooltipTrigger" data-tooltip="${escapeHtml(tooltip || m.name || "")}"><span class="medNameText">${escapeHtml(m.name)}</span> ${m.dose ? `<span class="badge">${escapeHtml(m.dose)}</span>` : ""}</div>
-        <div class="hint">${m.prn ? "dora\u017anie" : (m.defaultTime ? `domyślnie ${escapeHtml(m.defaultTime)}` : "bez domyślnej godziny")}</div>
+        <div class="name tooltipTrigger" data-tooltip="${escapeHtml(tooltip || m.name || "")}"><span class="medNameText">${escapeHtml(m.name)}</span></div>
+        <div class="hint">${m.prn ? "doraźnie" : (m.defaultTime ? `domyślnie ${escapeHtml(m.defaultTime)}` : "bez domyślnej godziny")}</div>
       `;
 
       const right = document.createElement("div");
       right.className = "right";
 
+      if(m.dose){
+        const doseBadge = document.createElement("span");
+        doseBadge.className = "badge medDoseBadge";
+        doseBadge.textContent = m.dose;
+        right.appendChild(doseBadge);
+      }
+
       const hidden = document.createElement("input");
       hidden.type = "hidden";
       hidden.setAttribute("data-med-id", m.id);
-      hidden.value = cur[m.id] || "none";
+      const parsedCur = parseMedStatus(cur[m.id]);
+      let curVal = 0;
+      if(parsedCur.state === "taken") curVal = parsedCur.mult;
+      else if(parsedCur.state === "missed") curVal = -parsedCur.mult;
+      hidden.value = String(curVal);
 
-      const seg = document.createElement("div");
-      seg.className = "seg";
-
-      const mkBtn = (key, label, cls) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = `segBtn ${cls}`;
-        b.textContent = label;
-        b.onclick = () => { hidden.value = key; updateActive(); };
-        return b;
-      };
-
-      const btnTaken = mkBtn("taken", "wzięty", "taken");
-      const btnMissed = mkBtn("missed", "pominięty", "missed");
-      seg.appendChild(btnTaken);
-      seg.appendChild(btnMissed);
-
-      const reset = document.createElement("button");
-      reset.type = "button";
-      reset.className = "medReset";
-      reset.textContent = "brak info";
-      reset.onclick = () => { hidden.value = "none"; updateActive(); };
+      const multBox = document.createElement("div");
+      multBox.className = "medMultBox";
+      const multMinus = document.createElement("button");
+      multMinus.type = "button";
+      multMinus.className = "medMultBtn";
+      multMinus.textContent = "-";
+      const multVal = document.createElement("div");
+      multVal.className = "medMultVal";
+      const multPlus = document.createElement("button");
+      multPlus.type = "button";
+      multPlus.className = "medMultBtn";
+      multPlus.textContent = "+";
+      multBox.appendChild(multMinus);
+      multBox.appendChild(multVal);
+      multBox.appendChild(multPlus);
 
       const updateActive = () => {
-        const v = hidden.value || "none";
-        btnTaken.classList.toggle("active", v === "taken");
-        btnMissed.classList.toggle("active", v === "missed");
-        reset.classList.toggle("active", v === "none");
+        const num = Number(hidden.value) || 0;
+        multVal.textContent = num === 0 ? "0" : (num > 0 ? `+${num}` : String(num));
+        multBox.classList.toggle("pos", num > 0);
+        multBox.classList.toggle("neg", num < 0);
       };
       updateActive();
 
-      right.appendChild(seg);
-      right.appendChild(reset);
+      const bump = (dir) => {
+        const curNum = Number(hidden.value) || 0;
+        const next = Math.max(minMult, Math.min(maxMult, curNum + dir));
+        hidden.value = String(next);
+        updateActive();
+      };
+      multMinus.onclick = () => bump(-1);
+      multPlus.onclick = () => bump(1);
+
+      right.appendChild(multBox);
       right.appendChild(hidden);
 
       row.appendChild(left);
@@ -455,7 +494,7 @@
       document.querySelectorAll('#medChecklist input[type="hidden"][data-med-id]').forEach(h => {
         const id = h.getAttribute("data-med-id");
         const v = h.value;
-        if(id && v && v !== "none") medsStatus[id] = v;
+        if(id && v && v !== "none" && v !== "0") medsStatus[id] = v;
       });
     }
 
