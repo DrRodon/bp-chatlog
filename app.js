@@ -167,9 +167,12 @@
     const span = (max - min) || 1;
 
     const lines = points.map((s) => {
+      const lastIndex = s.values.reduce((acc, v, i) => (v == null ? acc : i), -1);
+      const denom = Math.max(1, lastIndex);
       const pts = s.values.map((v, i) => {
+        if(i > lastIndex) return null;
         if(v == null) return null;
-        const x = p + (w - 2 * p) * (i / Math.max(1, s.values.length - 1));
+        const x = p + (w - 2 * p) * (i / denom);
         const y = p + (h - 2 * p) * (1 - (v - min) / span);
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).filter(Boolean).join(" ");
