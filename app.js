@@ -349,10 +349,8 @@
 
       const btnTaken = mkBtn("taken", "wzięty", "taken");
       const btnMissed = mkBtn("missed", "pominięty", "missed");
-      const btnLate = mkBtn("late", "opóźniony", "late");
       seg.appendChild(btnTaken);
       seg.appendChild(btnMissed);
-      seg.appendChild(btnLate);
 
       const reset = document.createElement("button");
       reset.type = "button";
@@ -364,7 +362,6 @@
         const v = hidden.value || "none";
         btnTaken.classList.toggle("active", v === "taken");
         btnMissed.classList.toggle("active", v === "missed");
-        btnLate.classList.toggle("active", v === "late");
         reset.classList.toggle("active", v === "none");
       };
       updateActive();
