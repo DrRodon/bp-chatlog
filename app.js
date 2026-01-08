@@ -342,7 +342,8 @@
 
     box.innerHTML = "";
     meds.forEach(m => {
-      const tooltip = [m.name, m.dose, m.defaultTime].filter(Boolean).join(" | ");
+      const prnLabel = m.prn ? "dora\u017anie" : "";
+      const tooltip = [m.name, m.dose, prnLabel || m.defaultTime].filter(Boolean).join(" | ");
       const row = document.createElement("div");
       row.className = "medItem";
 
@@ -350,7 +351,7 @@
       left.className = "left";
       left.innerHTML = `
         <div class="name tooltipTrigger" data-tooltip="${escapeHtml(tooltip || m.name || "")}"><span class="medNameText">${escapeHtml(m.name)}</span> ${m.dose ? `<span class="badge">${escapeHtml(m.dose)}</span>` : ""}</div>
-        <div class="hint">${m.defaultTime ? `domyślnie ${escapeHtml(m.defaultTime)}` : "bez domyślnej godziny"}</div>
+        <div class="hint">${m.prn ? "dora\u017anie" : (m.defaultTime ? `domyślnie ${escapeHtml(m.defaultTime)}` : "bez domyślnej godziny")}</div>
       `;
 
       const right = document.createElement("div");

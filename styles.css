@@ -580,7 +580,7 @@ html[data-mode="dark"] .bpArrow .tooltipBox{
 .toggleField{
   display: grid;
   gap: 6px;
-  align-content: end;
+  align-content: center;
 }
 
 .toggleInput{
@@ -627,6 +627,8 @@ html[data-mode="dark"] select optgroup{
 textarea{ min-height: 86px; resize: vertical; }
 
 .row{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rowInline{ display:grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+.toggleLabel{ font-size: 12px; font-weight: 650; opacity: .92; margin-bottom: 6px; }
 .row3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 .mt10{ margin-top:10px; }
 
