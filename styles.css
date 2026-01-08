@@ -170,17 +170,36 @@ h1{ font-size: 16px; margin:0; font-weight:700; }
   align-items:center;
 }
 
-.toggleLabel{
-  display:flex;
-  align-items:center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 650;
-  opacity: .9;
+.iconBtn{
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel2);
+  color: var(--text);
+  cursor: pointer;
 }
 
-.toggleLabel input{
-  width: auto;
+.iconBtn svg{ width: 18px; height: 18px; }
+
+.iconToggle{
+  display: inline-flex;
+  align-items: center;
+}
+
+.iconToggle input{
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.iconToggle input:checked + .iconBtn{
+  background: var(--accentSoft);
+  border-color: rgba(20,184,166,.35);
 }
 
 .dateRange{

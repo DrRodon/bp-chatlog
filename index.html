@@ -214,18 +214,28 @@
             <button id="todayBtn" type="button" class="secondary">Dziś</button>
             <button id="allBtn" type="button" class="secondary">Wszystko</button>
           </div>
-          <label class="toggleLabel">
-            <input id="showMetrics" type="checkbox" />
-            Pokaż wpisy metryczne
-          </label>
         </div>
 
         <div class="btns" style="margin-top:6px;">
-          <button id="copyViewBtn" type="button" class="secondary">Copy view JSON</button>
           <select id="sort" style="width:auto;">
             <option value="desc">Sort: najnowsze</option>
             <option value="asc">Sort: najstarsze</option>
           </select>
+          <label class="iconToggle" title="Pokaż wpisy metryczne">
+            <input id="showMetrics" type="checkbox" aria-label="Pokaż wpisy metryczne" />
+            <span class="iconBtn" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </span>
+          </label>
+          <button id="copyViewBtn" type="button" class="iconBtn" aria-label="Kopiuj JSON z widoku" title="Kopiuj JSON z widoku">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 8h10v12H8z" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
         </div>
 
         <div class="summaryPanel" id="viewSummary">
