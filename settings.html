@@ -76,13 +76,23 @@
           </div>
         </div>
 
-        <div class="row mt10">
-          <div>
-            <label for="medTime">Domyślna godzina</label>
-            <input id="medTime" type="time" value="07:30" />
+                        <div class="row mt10">
+          <div class="rowInline">
+            <div>
+              <label for="medTime">Domyślna godzina</label>
+              <input id="medTime" type="time" value="07:30" />
+            </div>
+            <div class="toggleField">
+              <div class="toggleLabel">Dora&#x17A;ne</div>
+              <label class="switch" aria-label="Dora&#x17A;ne">
+                <input type="checkbox" id="medPrn" />
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
-          <div style="display:grid; align-content:end;">
+          <div style="display:grid; align-content:end; gap:8px;">
             <button id="addMedBtn" type="button" class="ok">Dodaj lek</button>
+            <button id="cancelMedBtn" type="button" class="secondary hidden">Anuluj</button>
           </div>
         </div>
 
@@ -181,7 +191,8 @@
           const safeName = escapeAttr(m.name || "-");
           const safeDose = escapeAttr(m.dose || "");
           const safeTime = escapeAttr(m.defaultTime || "");
-          const tooltip = [m.name, m.dose, m.defaultTime].filter(Boolean).join(" | ");
+          const prnLabel = m.prn ? "dora\u017anie" : "";
+          const tooltip = [m.name, m.dose, prnLabel || m.defaultTime].filter(Boolean).join(" | ");
           const safeTooltip = escapeAttr(tooltip || m.name || "");
           const row = document.createElement("div");
           row.className = "medItem";
@@ -190,11 +201,31 @@
           left.className = "left";
           left.innerHTML = `
             <div class="name tooltipTrigger" data-tooltip="${safeTooltip}"><span class="medNameText">${safeName}</span></div>
-            <div class="hint">${safeDose}${safeTime ? " | " + safeTime : ""} | ${m.active ? "active" : "inactive"}</div>
+            <div class="hint">${safeDose}${prnLabel ? " | " + prnLabel : (safeTime ? " | " + safeTime : "")} | ${m.active ? "active" : "inactive"}</div>
           `;
 
           const right = document.createElement("div");
           right.className = "right";
+
+          const edit = document.createElement("button");
+          edit.type = "button";
+          edit.className = "secondary";
+          edit.textContent = "Edytuj";
+          edit.onclick = () => {
+            const meds2 = loadMeds();
+            const idx = meds2.findIndex(x => x.id === m.id);
+            if(idx < 0) return;
+            const med = meds2[idx];
+            editingId = med.id;
+            document.getElementById("medName").value = med.name || "";
+            document.getElementById("medDose").value = med.dose || "";
+            if(medTimeInput) medTimeInput.dataset.lastTime = med.defaultTime || "";
+            if(medTimeInput) medTimeInput.value = med.defaultTime || "";
+            if(medPrnToggle) medPrnToggle.checked = Boolean(med.prn);
+            syncMedTimeState();
+            if(addMedBtn) addMedBtn.textContent = "Zapisz zmiany";
+            if(cancelMedBtn) cancelMedBtn.classList.remove("hidden");
+          };
 
           const toggle = document.createElement("button");
           toggle.type = "button";
@@ -224,6 +255,7 @@
             toast("Usunięto.");
           };
 
+          right.appendChild(edit);
           right.appendChild(toggle);
           right.appendChild(del);
 
@@ -233,23 +265,73 @@
         });
       }
 
-      document.getElementById("addMedBtn").addEventListener("click", () => {
-        const name = document.getElementById("medName").value.trim();
-        const dose = document.getElementById("medDose").value.trim();
-        const defaultTime = document.getElementById("medTime").value || "";
+      const medTimeInput = document.getElementById("medTime");
+      const medPrnToggle = document.getElementById("medPrn");
+      const addMedBtn = document.getElementById("addMedBtn");
+      const cancelMedBtn = document.getElementById("cancelMedBtn");
+      let editingId = null;
 
-        if(!name) return alert("Podaj nazwę leku.");
+      function syncMedTimeState(){
+        if(!medTimeInput || !medPrnToggle) return;
+        if(medPrnToggle.checked){
+          if(!medTimeInput.dataset.lastTime) medTimeInput.dataset.lastTime = medTimeInput.value || "";
+          medTimeInput.value = "";
+          medTimeInput.disabled = true;
+        }else{
+          medTimeInput.disabled = false;
+          if(!medTimeInput.value) medTimeInput.value = medTimeInput.dataset.lastTime || "07:30";
+        }
+      }
 
-        const id = slugify(name);
-        const meds = loadMeds();
+      if(medPrnToggle) medPrnToggle.addEventListener("change", syncMedTimeState);
+      syncMedTimeState();
 
-        if(meds.some(m => m.id === id)) return alert("Taki lek już istnieje.");
-
-        meds.push({ id, name, dose, defaultTime, active: true });
-        saveMeds(meds);
-
+      function resetMedForm(){
+        editingId = null;
         document.getElementById("medName").value = "";
         document.getElementById("medDose").value = "";
+        if(medPrnToggle) medPrnToggle.checked = false;
+        if(medTimeInput) medTimeInput.value = medTimeInput.dataset.lastTime || "07:30";
+        syncMedTimeState();
+        if(addMedBtn) addMedBtn.textContent = "Dodaj lek";
+        if(cancelMedBtn) cancelMedBtn.classList.add("hidden");
+      }
+
+      if(cancelMedBtn){
+        cancelMedBtn.addEventListener("click", resetMedForm);
+      }
+
+      addMedBtn.addEventListener("click", () => {
+        const name = document.getElementById("medName").value.trim();
+        const dose = document.getElementById("medDose").value.trim();
+        const isPrn = Boolean(medPrnToggle?.checked);
+        const defaultTime = isPrn ? "" : (medTimeInput?.value || "");
+
+        if(!name) return alert("Podaj nazw? leku.");
+
+        const meds = loadMeds();
+
+        if(editingId){
+          const idx = meds.findIndex(x => x.id === editingId);
+          if(idx >= 0){
+            meds[idx] = { ...meds[idx], name, dose, defaultTime, prn: isPrn };
+            saveMeds(meds);
+            renderMeds();
+            resetMedForm();
+            toast("Zapisano zmiany.");
+            return;
+          }else{
+            editingId = null;
+          }
+        }
+
+        const id = slugify(name);
+        if(meds.some(m => m.id === id)) return alert("Taki lek ju? istnieje.");
+
+        meds.push({ id, name, dose, defaultTime, prn: isPrn, active: true });
+        saveMeds(meds);
+
+        resetMedForm();
         renderMeds();
         toast("Dodano lek.");
       });
