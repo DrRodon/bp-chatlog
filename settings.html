@@ -99,8 +99,11 @@
         <div class="btns">
           <button id="exportAllBtn" type="button">Export JSON</button>
           <button id="importBtn" type="button" class="secondary">Import JSON</button>
+          <button id="exportMedsBtn" type="button">Export leków</button>
+          <button id="importMedsBtn" type="button" class="secondary">Import leków</button>
           <button id="wipeBtn" type="button" class="danger">Wyczyść wszystko</button>
           <input id="importFile" type="file" accept="application/json" class="hidden" />
+          <input id="importMedsFile" type="file" accept="application/json" class="hidden" />
         </div>
 
         <div class="hr"></div>
@@ -271,6 +274,29 @@
         document.getElementById("importFile").click();
       });
 
+      document.getElementById("exportMedsBtn").addEventListener("click", () => {
+        const meds = loadMeds();
+        const payload = {
+          exportedAt: new Date().toISOString(),
+          app: "bp-chatlog",
+          version: 1,
+          scope: "meds",
+          meds
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `notatnik-leki-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast("Wyeksportowano leki.");
+      });
+
+      document.getElementById("importMedsBtn").addEventListener("click", () => {
+        document.getElementById("importMedsFile").click();
+      });
+
       document.getElementById("importFile").addEventListener("change", async (e) => {
         const f = e.target.files?.[0];
         if(!f) return;
@@ -287,6 +313,28 @@
           toast("Zaimportowano.");
         }catch(err){
           alert("Import nie wyszedł. JSON jest uszkodzony albo w złym formacie.");
+        }finally{
+          e.target.value = "";
+        }
+      });
+
+      document.getElementById("importMedsFile").addEventListener("change", async (e) => {
+        const f = e.target.files?.[0];
+        if(!f) return;
+        try{
+          const txt = await f.text();
+          const json = JSON.parse(txt);
+          const meds = Array.isArray(json?.meds) ? json.meds : null;
+          if(!meds) return alert("Zły format. Oczekuję JSON z polem meds[].");
+
+          const ok = confirm(`Zaimportować leki: ${meds.length}? Nadpisze to obecną listę.`);
+          if(!ok) return;
+
+          saveMeds(meds);
+          renderMeds();
+          toast("Zaimportowano leki.");
+        }catch(err){
+          alert("Import leków nie wyszedł. JSON jest uszkodzony albo w złym formacie.");
         }finally{
           e.target.value = "";
         }
