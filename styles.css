@@ -489,7 +489,7 @@ h1{ font-size: 16px; margin:0; font-weight:700; }
   transition: opacity 0.12s ease, transform 0.12s ease;
   border: 1px solid var(--tooltip-border, var(--border));
   background-color: var(--tooltip-bg, var(--panel));
-  color: var(--text);
+  color: #0B1220;
   border-radius: 10px;
   box-shadow: var(--shadow);
   padding: 8px 10px;
@@ -500,6 +500,10 @@ h1{ font-size: 16px; margin:0; font-weight:700; }
   mix-blend-mode: normal;
   z-index: 3000;
   background-clip: padding-box;
+}
+
+html[data-mode="dark"] .bpArrow .tooltipBox{
+  color: #0B1220;
 }
 
 .bpArrow:hover .tooltipBox{
