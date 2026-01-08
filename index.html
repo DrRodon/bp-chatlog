@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pl" data-mode="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notatnik ciśnienia i analiza</title>
+
+  <!-- Favicon (bez dodatkowego pliku) -->
+  <link rel="icon" href='data:image/svg+xml;utf8,
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <rect width="64" height="64" rx="14" fill="%2314B8A6"/>
+    <path d="M50 32h-8l-5 12-10-28-6 18H14" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M32 56S13 44 9 32c-2.7-8.5 4.5-16 13-16 4.5 0 7.7 2.2 10 5.6C34.3 18.2 37.5 16 42 16c8.5 0 15.7 7.5 13 16-4 12-23 24-23 24Z" fill="none" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+  </svg>' />
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <header class="appHeader">
+    <div class="wrap headerRow">
+      <div class="brand">
+        <div class="brandIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M20 12h-3l-2 5-4-12-2 7H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 21s-7-4.5-9-9a5.5 5.5 0 0 1 9-5 5.5 5.5 0 0 1 9 5c-2 4.5-9 9-9 9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Notatnik ciśnienia i analiza</h1>
+          <div class="sub">Wklej log z czatu, rozbij na pola, zapisz.</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <a class="linkBtn" href="summary.html">Podsumowania</a>
+        <a class="linkBtn" href="./settings.html" title="Ustawienia">
+          <span class="labelIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M19.4 15a7.9 7.9 0 0 0 .1-2l2-1.2-2-3.4-2.3.7a7.6 7.6 0 0 0-1.7-1L15 5H9l-.5 2.1a7.6 7.6 0 0 0-1.7 1l-2.3-.7-2 3.4 2 1.2a7.9 7.9 0 0 0 .1 2l-2 1.2 2 3.4 2.3-.7a7.6 7.6 0 0 0 1.7 1L9 21h6l.5-2.1a7.6 7.6 0 0 0 1.7-1l2.3.7 2-3.4-2-1.2Z"
+                    stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Ustawienia
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="grid gridViewport">
+    <!-- LEWA: formularz -->
+    <section class="card cardScroll" id="formCard">
+      <div class="cardHead">
+        <h2 id="formTitle">Dodaj wpis</h2>
+        <span class="pill">Wpisów: <strong id="countPill">0</strong></span>
+      </div>
+
+      <div class="cardBodyScroll">
+        <div class="block">
+          <label for="raw" class="labelRow">
+            <span class="labelIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M9 4h6l1 2h3v16H5V6h3l1-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M9 4a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            Wklej log z czatu (opcjonalnie)
+          </label>
+          <textarea id="raw" placeholder="np. 05.01.2026 15:10&#10;pominąłem Atacand&#10;2 kanapki, 250 ml wody z sokiem&#10;mam zjazd"></textarea>
+
+          <div class="btns">
+            <button id="parseBtn" class="secondary" type="button">Rozbij na pola</button>
+            <button id="fillNowBtn" class="secondary" type="button">Ustaw teraz</button>
+            <button id="rawClearBtn" class="secondary" type="button">Wyczyść</button>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row">
+          <div>
+            <label for="dt">Data i czas wpisu</label>
+            <input id="dt" type="datetime-local" />
+          </div>
+
+          <div>
+            <label for="entryType">Typ wpisu (etykieta)</label>
+            <select id="entryType">
+              <option value="log">Log (objawy/analiza)</option>
+              <option value="bp">Pomiar ciśnienia</option>
+              <option value="med">Leki</option>
+              <option value="sleep">Sen</option>
+              <option value="food">Jedzenie/nawodnienie</option>
+              <option value="event">Wydarzenie/stresor</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row3 mt10">
+          <div>
+            <label for="sys">SYS</label>
+            <input id="sys" inputmode="numeric" placeholder="np. 128" />
+          </div>
+          <div>
+            <label for="dia">DIA</label>
+            <input id="dia" inputmode="numeric" placeholder="np. 84" />
+          </div>
+          <div>
+            <label for="pulse">Tętno</label>
+            <input id="pulse" inputmode="numeric" placeholder="np. 72" />
+          </div>
+        </div>
+
+        <div class="mt10">
+          <label>Leki (lista z Ustawień)</label>
+          <div id="medChecklist" class="medChecklist"></div>
+
+          <div class="mt10">
+            <label for="medNotes">Uwagi do leków</label>
+            <input id="medNotes" placeholder="np. Atacand wypadł z ręki, nie byłem pewien" />
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="mt10">
+          <label for="food">Jedzenie</label>
+          <input id="food" placeholder="np. 2 kanapki, obiad, słodycze" />
+        </div>
+
+        <div class="row mt10">
+          <div>
+            <label for="waterAmount">Nawodnienie (ml)</label>
+            <input id="waterAmount" inputmode="numeric" placeholder="np. 250" />
+          </div>
+          <div>
+            <label for="waterType">Rodzaj płynu (procent wody)</label>
+            <select id="waterType">
+              <option value="1">woda (100%)</option>
+              <option value="0.85">woda z sokiem (85%)</option>
+              <option value="0.9">herbata (90%)</option>
+              <option value="0.99">kawa (99%)</option>
+              <option value="0.7">sok (70%)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mt10">
+          <div>
+            <label for="substances">Kofeina, alkohol, nikotyna</label>
+            <input id="substances" placeholder="np. kawa x2, bez alkoholu" />
+          </div>
+          <div>
+            <label for="sleep">Sen</label>
+            <input id="sleep" placeholder="np. 6:30, pobudki x2" />
+          </div>
+        </div>
+
+        <div class="mt10">
+          <label for="events">Wydarzenia (seks, stres, wysiłek)</label>
+          <input id="events" placeholder="np. rano seks, stres w pracy" />
+        </div>
+
+        <div class="mt10">
+          <label>Stan (szybkie tagi)</label>
+          <div class="chips">
+            <button class="chipbtn" type="button" data-addsym="zjazd">zjazd</button>
+            <button class="chipbtn" type="button" data-addsym="skołowanie">skołowanie</button>
+            <button class="chipbtn" type="button" data-addsym="niepokój">niepokój</button>
+            <button class="chipbtn" type="button" data-addsym="kołatanie">kołatanie</button>
+            <button class="chipbtn" type="button" data-addsym="ból głowy">ból głowy</button>
+            <button class="chipbtn" type="button" data-addsym="zawroty">zawroty</button>
+            <button class="chipbtn" type="button" data-addsym="napięcie">napięcie</button>
+            <button class="chipbtn" type="button" data-addsym="zmęczenie">zmęczenie</button>
+          </div>
+        </div>
+
+        <div class="mt10">
+          <label for="symptoms">Objawy (Twoje słowa)</label>
+          <input id="symptoms" placeholder="np. mam zjazd, jestem skołowany" />
+        </div>
+
+        <div class="row mt10">
+          <div class="sliderBox">
+            <div class="sliderTop">
+              <label for="severity">Nasilenie</label>
+              <div class="sliderReadout">
+                <strong id="severityVal">0</strong>
+                <span id="severityText" class="sliderText">brak</span>
+              </div>
+            </div>
+            <input id="severity" type="range" min="0" max="10" step="1" />
+          </div>
+
+          <div class="sliderBox">
+            <div class="sliderTop">
+              <label for="anxiety">Lęk lub napięcie</label>
+              <div class="sliderReadout">
+                <strong id="anxietyVal">0</strong>
+                <span id="anxietyText" class="sliderText">brak</span>
+              </div>
+            </div>
+            <input id="anxiety" type="range" min="0" max="10" step="1" />
+          </div>
+        </div>
+
+        <div class="mt10">
+          <label for="hypothesis">Hipoteza</label>
+          <textarea id="hypothesis" placeholder="np. pominąłem dawkę + słabe nawodnienie"></textarea>
+        </div>
+
+        <div class="mt10">
+          <label for="notes">Notatki</label>
+          <textarea id="notes" placeholder="dowolne"></textarea>
+        </div>
+
+        <div class="btns">
+          <button id="saveBtn" class="ok" type="button">Zapisz</button>
+          <button id="resetBtn" class="secondary" type="button">Wyczyść formularz</button>
+          <button id="cancelEditBtn" class="secondary hidden" type="button">Anuluj edycję</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRAWA: lista -->
+    <section class="card cardScroll">
+      <div class="topbar topbarFixed">
+        <div class="filters">
+          <input id="q" placeholder="Szukaj w wpisach" />
+          <div class="dateRange">
+            <span class="dateLabel">Od <input id="fromDate" type="date" /></span>
+            <span class="dateLabel">Do <input id="toDate" type="date" /></span>
+            <button id="todayBtn" type="button" class="secondary">Dziś</button>
+            <button id="allBtn" type="button" class="secondary">Wszystko</button>
+          </div>
+        </div>
+
+        <div class="btns" style="margin-top:6px;">
+          <button id="copyViewBtn" type="button" class="secondary">Copy view JSON</button>
+          <select id="sort" style="width:auto;">
+            <option value="desc">Sort: najnowsze</option>
+            <option value="asc">Sort: najstarsze</option>
+          </select>
+        </div>
+
+        <div class="pill">Średnie z widoku: <strong id="avgPill">-</strong></div>
+      </div>
+
+      <div class="listScroll">
+        <div class="list" id="list"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="./themes.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
