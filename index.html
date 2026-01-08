@@ -58,22 +58,8 @@
 
       <div class="cardBodyScroll">
         <div class="block">
-          <label for="raw" class="labelRow">
-            <span class="labelIcon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M9 4h6l1 2h3v16H5V6h3l1-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M9 4a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </span>
-            Wklej log z czatu (opcjonalnie)
-          </label>
-          <textarea id="raw" placeholder="np. 05.01.2026 15:10&#10;pominąłem Atacand&#10;2 kanapki, 250 ml wody z sokiem&#10;mam zjazd"></textarea>
-
-          <div class="btns">
-            <button id="parseBtn" class="secondary" type="button">Rozbij na pola</button>
-            <button id="fillNowBtn" class="secondary" type="button">Ustaw teraz</button>
-            <button id="rawClearBtn" class="secondary" type="button">Wyczyść</button>
-          </div>
+          <label for="notes">Notatki</label>
+          <textarea id="notes" placeholder="dowolne"></textarea>
         </div>
 
         <div class="hr"></div>
@@ -209,12 +195,6 @@
           <label for="hypothesis">Hipoteza</label>
           <textarea id="hypothesis" placeholder="np. pominąłem dawkę + słabe nawodnienie"></textarea>
         </div>
-
-        <div class="mt10">
-          <label for="notes">Notatki</label>
-          <textarea id="notes" placeholder="dowolne"></textarea>
-        </div>
-
         <div class="btns">
           <button id="saveBtn" class="ok" type="button">Zapisz</button>
           <button id="resetBtn" class="secondary" type="button">Wyczyść formularz</button>

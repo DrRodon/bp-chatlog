@@ -229,7 +229,6 @@
     el("symptoms").value = "";
     el("hypothesis").value = "";
     el("notes").value = "";
-    el("raw").value = "";
 
     el("medNotes").value = "";
     renderMedChecklist({});
@@ -277,7 +276,6 @@
       anxiety: safeNum(el("anxiety").value) ?? 0,
       hypothesis: el("hypothesis").value.trim(),
       notes: el("notes").value.trim(),
-      raw: el("raw").value.trim()
     };
   }
 
@@ -306,7 +304,6 @@
 
     el("hypothesis").value = item.hypothesis ?? "";
     el("notes").value = item.notes ?? "";
-    el("raw").value = item.raw ?? "";
 
     el("medNotes").value = item.medNotes ?? "";
     renderMedChecklist(item.medications || {});
@@ -364,7 +361,7 @@
       item.food,
       item.waterMl, item.hydration,
       item.events, item.sleep, item.substances,
-      item.symptoms, item.hypothesis, item.notes, item.raw,
+      item.symptoms, item.hypothesis, item.notes,
       item.medNotes, medsText
     ].join(" | "));
   }
@@ -510,7 +507,6 @@
       if(it.symptoms) lines.push({k:"Objawy", v: it.symptoms});
       if(it.hypothesis) lines.push({k:"Hipoteza", v: it.hypothesis});
       if(it.notes) lines.push({k:"Notatki", v: it.notes});
-      if(it.raw) lines.push({k:"Wklejka", v: it.raw});
 
       for(const ln of lines){
         const p = document.createElement("div");
@@ -625,15 +621,6 @@
     el("saveBtn").addEventListener("click", upsert);
     el("resetBtn").addEventListener("click", () => { resetForm(); toast("Wyczyszczono formularz."); });
     el("cancelEditBtn").addEventListener("click", () => { resetForm(); toast("Anulowano edycję."); });
-
-    el("parseBtn").addEventListener("click", () => {
-      const raw = el("raw").value.trim();
-      if(!raw) return toast("Najpierw wklej tekst.");
-      toast("Parser zostaje w kolejnej paczce. Tu skupiamy się na stabilnym UI.");
-    });
-
-    el("fillNowBtn").addEventListener("click", () => { el("dt").value = nowLocalInputValue(); toast("Ustawiono teraz."); });
-    el("rawClearBtn").addEventListener("click", () => { el("raw").value = ""; toast("Wyczyszczono wklejkę."); });
 
     el("severity").addEventListener("input", syncSliders);
     el("anxiety").addEventListener("input", syncSliders);
