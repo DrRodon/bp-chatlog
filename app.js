@@ -445,6 +445,8 @@
     el("notes").value = "";
 
     el("medNotes").value = "";
+    el("medsToggle").checked = false;
+    el("medsSection").classList.add("hidden");
     renderMedChecklist({});
 
     el("severity").value = "0";
@@ -457,11 +459,14 @@
     const dtISO = dtLocal ? new Date(dtLocal).toISOString() : new Date().toISOString();
 
     const medsStatus = {};
-    document.querySelectorAll('#medChecklist input[type="hidden"][data-med-id]').forEach(h => {
-      const id = h.getAttribute("data-med-id");
-      const v = h.value;
-      if(id && v && v !== "none") medsStatus[id] = v;
-    });
+    const medsEnabled = Boolean(el("medsToggle").checked);
+    if(medsEnabled){
+      document.querySelectorAll('#medChecklist input[type="hidden"][data-med-id]').forEach(h => {
+        const id = h.getAttribute("data-med-id");
+        const v = h.value;
+        if(id && v && v !== "none") medsStatus[id] = v;
+      });
+    }
 
     const waterMl = safeNum(el("waterAmount").value);
     const hydration = Number(el("waterType").value || 1);
@@ -472,8 +477,8 @@
       dia: safeNum(el("dia").value),
       pulse: safeNum(el("pulse").value),
 
-      medications: medsStatus,
-      medNotes: el("medNotes").value.trim(),
+      medications: medsEnabled ? medsStatus : {},
+      medNotes: medsEnabled ? el("medNotes").value.trim() : "",
 
       food: el("food").value.trim(),
       waterMl,
@@ -516,6 +521,9 @@
     el("hypothesis").value = item.hypothesis ?? "";
     el("notes").value = item.notes ?? "";
 
+    const hasMeds = (item.medications && Object.keys(item.medications).length) || (item.medNotes && item.medNotes.trim());
+    el("medsToggle").checked = Boolean(hasMeds);
+    el("medsSection").classList.toggle("hidden", !hasMeds);
     el("medNotes").value = item.medNotes ?? "";
     renderMedChecklist(item.medications || {});
   }
@@ -785,6 +793,7 @@
     syncSliders();
 
     renderMedChecklist({});
+    el("medsSection").classList.add("hidden");
 
     el("saveBtn").addEventListener("click", upsert);
     el("resetBtn").addEventListener("click", () => { resetForm(); toast("Wyczyszczono formularz."); });
@@ -792,6 +801,15 @@
 
     el("severity").addEventListener("input", syncSliders);
     el("anxiety").addEventListener("input", syncSliders);
+
+    el("medsToggle").addEventListener("change", () => {
+      const on = el("medsToggle").checked;
+      el("medsSection").classList.toggle("hidden", !on);
+      if(!on){
+        el("medNotes").value = "";
+        renderMedChecklist({});
+      }
+    });
 
     document.querySelectorAll(".chipbtn").forEach(btn => {
       btn.onclick = () => {

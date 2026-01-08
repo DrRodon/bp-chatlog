@@ -73,6 +73,16 @@
             <label for="dt">Data i czas wpisu</label>
             <input id="dt" type="datetime-local" />
           </div>
+          <div class="toggleField">
+            <label for="medsToggle">Wpis leków</label>
+            <div class="toggleInput">
+              <span class="toggleText">Przyjęte leki</span>
+              <label class="switch" aria-label="Przyjęte leki">
+                <input type="checkbox" id="medsToggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="row3 mt10">
@@ -90,7 +100,7 @@
           </div>
         </div>
 
-        <div class="mt10">
+        <div class="mt10" id="medsSection">
           <label>Leki (lista z Ustawień)</label>
           <div id="medChecklist" class="medChecklist"></div>
 
