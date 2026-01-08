@@ -28,7 +28,7 @@
         </div>
         <div>
           <h1>Notatnik ciśnienia i analiza</h1>
-          <div class="sub">Wklej log z czatu, rozbij na pola, zapisz.</div>
+          <div class="sub">Zapisuj wpisy, analizuj wykresy, trzymaj wszystko lokalnie.</div>
         </div>
       </div>
 
@@ -53,27 +53,17 @@
     <section class="card cardScroll" id="formCard">
       <div class="cardHead">
         <h2 id="formTitle">Dodaj wpis</h2>
-        <span class="pill">Wpisów: <strong id="countPill">0</strong></span>
+        <div class="cardHeadActions">
+          <button id="saveBtn" class="ok" type="button">Zapisz</button>
+          <button id="resetBtn" class="secondary" type="button">Wyczyść formularz</button>
+          <span class="pill">Wpisów: <strong id="countPill">0</strong></span>
+        </div>
       </div>
 
       <div class="cardBodyScroll">
         <div class="block">
-          <label for="raw" class="labelRow">
-            <span class="labelIcon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M9 4h6l1 2h3v16H5V6h3l1-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M9 4a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </span>
-            Wklej log z czatu (opcjonalnie)
-          </label>
-          <textarea id="raw" placeholder="np. 05.01.2026 15:10&#10;pominąłem Atacand&#10;2 kanapki, 250 ml wody z sokiem&#10;mam zjazd"></textarea>
-
-          <div class="btns">
-            <button id="parseBtn" class="secondary" type="button">Rozbij na pola</button>
-            <button id="fillNowBtn" class="secondary" type="button">Ustaw teraz</button>
-            <button id="rawClearBtn" class="secondary" type="button">Wyczyść</button>
-          </div>
+          <label for="notes">Notatki</label>
+          <textarea id="notes" placeholder="dowolne"></textarea>
         </div>
 
         <div class="hr"></div>
@@ -83,17 +73,15 @@
             <label for="dt">Data i czas wpisu</label>
             <input id="dt" type="datetime-local" />
           </div>
-
-          <div>
-            <label for="entryType">Typ wpisu (etykieta)</label>
-            <select id="entryType">
-              <option value="log">Log (objawy/analiza)</option>
-              <option value="bp">Pomiar ciśnienia</option>
-              <option value="med">Leki</option>
-              <option value="sleep">Sen</option>
-              <option value="food">Jedzenie/nawodnienie</option>
-              <option value="event">Wydarzenie/stresor</option>
-            </select>
+          <div class="toggleField">
+            <label for="medsToggle">Wpis leków</label>
+            <div class="toggleInput">
+              <span class="toggleText">Przyjęte leki</span>
+              <label class="switch" aria-label="Przyjęte leki">
+                <input type="checkbox" id="medsToggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -112,7 +100,7 @@
           </div>
         </div>
 
-        <div class="mt10">
+        <div class="mt10" id="medsSection">
           <label>Leki (lista z Ustawień)</label>
           <div id="medChecklist" class="medChecklist"></div>
 
@@ -163,20 +151,6 @@
         </div>
 
         <div class="mt10">
-          <label>Stan (szybkie tagi)</label>
-          <div class="chips">
-            <button class="chipbtn" type="button" data-addsym="zjazd">zjazd</button>
-            <button class="chipbtn" type="button" data-addsym="skołowanie">skołowanie</button>
-            <button class="chipbtn" type="button" data-addsym="niepokój">niepokój</button>
-            <button class="chipbtn" type="button" data-addsym="kołatanie">kołatanie</button>
-            <button class="chipbtn" type="button" data-addsym="ból głowy">ból głowy</button>
-            <button class="chipbtn" type="button" data-addsym="zawroty">zawroty</button>
-            <button class="chipbtn" type="button" data-addsym="napięcie">napięcie</button>
-            <button class="chipbtn" type="button" data-addsym="zmęczenie">zmęczenie</button>
-          </div>
-        </div>
-
-        <div class="mt10">
           <label for="symptoms">Objawy (Twoje słowa)</label>
           <input id="symptoms" placeholder="np. mam zjazd, jestem skołowany" />
         </div>
@@ -184,7 +158,7 @@
         <div class="row mt10">
           <div class="sliderBox">
             <div class="sliderTop">
-              <label for="severity">Nasilenie</label>
+              <label for="severity">Nasilenie bólu</label>
               <div class="sliderReadout">
                 <strong id="severityVal">0</strong>
                 <span id="severityText" class="sliderText">brak</span>
@@ -209,15 +183,7 @@
           <label for="hypothesis">Hipoteza</label>
           <textarea id="hypothesis" placeholder="np. pominąłem dawkę + słabe nawodnienie"></textarea>
         </div>
-
-        <div class="mt10">
-          <label for="notes">Notatki</label>
-          <textarea id="notes" placeholder="dowolne"></textarea>
-        </div>
-
         <div class="btns">
-          <button id="saveBtn" class="ok" type="button">Zapisz</button>
-          <button id="resetBtn" class="secondary" type="button">Wyczyść formularz</button>
           <button id="cancelEditBtn" class="secondary hidden" type="button">Anuluj edycję</button>
         </div>
       </div>
@@ -237,17 +203,62 @@
         </div>
 
         <div class="btns" style="margin-top:6px;">
-          <button id="copyViewBtn" type="button" class="secondary">Copy view JSON</button>
           <select id="sort" style="width:auto;">
-            <option value="desc">Sort: najnowsze</option>
-            <option value="asc">Sort: najstarsze</option>
+            <option value="desc">Sortowanie: najnowsze</option>
+            <option value="asc">Sortowanie: najstarsze</option>
           </select>
+          <label class="iconToggle" title="Pokaż wpisy metryczne">
+            <input id="showMetrics" type="checkbox" aria-label="Pokaż wpisy metryczne" />
+            <span class="iconBtn" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </span>
+          </label>
+          <button id="copyViewBtn" type="button" class="iconBtn" aria-label="Kopiuj JSON z widoku" title="Kopiuj JSON z widoku">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 8h10v12H8z" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
         </div>
 
-        <div class="pill">Średnie z widoku: <strong id="avgPill">-</strong></div>
       </div>
 
       <div class="listScroll">
+        <div class="summaryWrap">
+          <div class="summaryPanel" id="viewSummary">
+            <div class="summaryBlock">
+              <div class="summaryTitle">Nawodnienie</div>
+              <div class="summaryValue"><span id="waterTotal">-</span> / <span id="waterTarget">-</span> ml</div>
+              <div class="summaryHint" id="waterDays">- dni</div>
+              <div class="summaryBar">
+                <div class="summaryBarFill" id="waterBar"></div>
+              </div>
+            </div>
+
+            <div class="summaryBlock meds">
+              <div class="summaryTitle">Leki</div>
+              <div class="medsTable" id="medsSummary"></div>
+            </div>
+
+            <div class="summaryBlock bp">
+              <div class="summaryTitle">Ciśnienie i puls</div>
+              <div class="bpGrid">
+                <div class="bpChartCol">
+                  <div class="summaryChart" id="bpPulseChart">Brak danych w widoku.</div>
+                  <div class="summaryLegend">
+                    <span class="legendItem sys">SYS</span>
+                    <span class="legendItem dia">DIA</span>
+                    <span class="legendItem pulse">Tętno</span>
+                  </div>
+                </div>
+                <div class="bpInfo" id="bpPulseInfo">-</div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="list" id="list"></div>
       </div>
     </section>
