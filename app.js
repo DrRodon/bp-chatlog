@@ -261,7 +261,7 @@
       }
       if(bpCount || pulseCount){
         rows.push(
-          `<div class="bpInfoRow"><span class="bpInfoLabel">Wpisy:</span><span class="bpInfoValue">BP ${bpCount} | P ${pulseCount}</span></div>`
+          `<div class="bpInfoRow"><span class="bpInfoLabel">Wpisy:</span><span class="bpInfoValue">BP ${bpCount} | Tętno ${pulseCount}</span></div>`
         );
       }
 
