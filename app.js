@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const STORAGE_KEY = "bp_chatlog_items_v4";
   const MEDS_KEY = "bp_chatlog_meds_v1";
   const WATER_TARGET_KEY = "bp_chatlog_water_target_ml_v1";
@@ -77,6 +77,23 @@
     if(sys >= 130 || dia >= 85) return {label:"podwyższone", cls:"warn"};
     if(sys < 90 || dia < 60) return {label:"niskie", cls:"warn"};
     return {label:"OK", cls:"ok"};
+  }
+
+  function bpStatusInfo(sys, dia){
+    if(sys == null || dia == null) return { cls: "", title: "Brak danych", explain: "", range: "" };
+    if(sys >= 180 || dia >= 120){
+      return { cls: "bad", title: "Bardzo wysokie cisnienie", explain: "Znacznie powyzej normy.", range: "SYS 180+ lub DIA 120+" };
+    }
+    if(sys >= 140 || dia >= 90){
+      return { cls: "warn", title: "Wysokie cisnienie", explain: "Powyzej normy.", range: "SYS 140+ lub DIA 90+" };
+    }
+    if(sys >= 130 || dia >= 85){
+      return { cls: "warn", title: "Podwyzszone cisnienie", explain: "Lekko powyzej normy.", range: "SYS 130+ lub DIA 85+" };
+    }
+    if(sys < 90 || dia < 60){
+      return { cls: "warn", title: "Niskie cisnienie", explain: "Ponizej normy.", range: "SYS < 90 lub DIA < 60" };
+    }
+    return { cls: "ok", title: "W normie", explain: "Wartosc w granicach normy.", range: "Ponizej progow ostrzegawczych" };
   }
 
   function scaleLabel(v){
@@ -210,17 +227,36 @@
 
       const rows = [];
       if(latestBp){
-        const bp = classifyBP(latestBp.sys, latestBp.dia);
+        const status = bpStatusInfo(latestBp.sys, latestBp.dia);
+        const arrow = status.cls === "bad" ? "&#9650;&#9650;" : (status.cls === "warn" ? "&#9650;" : "&#9654;");
+        const ariaText = [status.title, status.range].filter(Boolean).join(". ");
         rows.push(
-          `<div class="bpInfoRow"><span class="bpInfoLabel">Ostatni BP:</span><span class="bpInfoValue">${latestBp.sys}/${latestBp.dia}</span><span>${bp.label}</span></div>`
-        );
-        rows.push(
-          `<div class="bpInfoRow"><span class="bpInfoLabel">Kiedy:</span><span class="bpInfoValue">${formatWhen(latestBp.dt)}</span></div>`
+          `<div class="bpInfoRow bpRow">
+            <div class="bpRowMain">
+              <span class="bpInfoLabel">Ostatni BP:</span>
+              <span class="bpInfoValue">${latestBp.sys}/${latestBp.dia}</span>
+            </div>
+            <span class="bpArrow ${status.cls}" aria-label="${escapeHtml(ariaText)}">
+              ${arrow}
+              <span class="tooltipBox">
+                <span class="tooltipTitle">${escapeHtml(status.title)}</span>
+                <span class="tooltipText">${escapeHtml(status.explain)}</span>
+                <span class="tooltipText"><strong>SYS</strong> = gorne cisnienie (skurczowe), <strong>DIA</strong> = dolne (rozkurczowe).</span>
+                <span class="tooltipText">Prog dla tego statusu: ${escapeHtml(status.range)}.</span>
+                <span class="tooltipText">Progi w aplikacji (SYS/DIA): 180/120, 140/90, 130/85, &lt;90/&lt;60.</span>
+              </span>
+            </span>
+          </div>`
         );
       }
       if(latestPulse){
         rows.push(
           `<div class="bpInfoRow"><span class="bpInfoLabel">Ostatni puls:</span><span class="bpInfoValue">${latestPulse.pulse}</span></div>`
+        );
+      }
+      if(latestBp){
+        rows.push(
+          `<div class="bpInfoRow"><span class="bpInfoLabel">Kiedy:</span><span class="bpInfoValue">${formatWhen(latestBp.dt)}</span></div>`
         );
       }
       if(bpCount || pulseCount){
@@ -790,3 +826,4 @@
 
   init();
 })();
+

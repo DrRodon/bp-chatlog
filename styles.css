@@ -1,4 +1,4 @@
-:root{
+﻿:root{
   --radius: 14px;
   --shadow: 0 10px 30px rgba(0,0,0,.08);
   --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -279,6 +279,8 @@ h1{ font-size: 16px; margin:0; font-weight:700; }
   gap: 6px;
   min-width: 0;
   justify-content: flex-start;
+  position: relative;
+  z-index: 0;
 }
 
 .summaryTitle{
@@ -390,25 +392,127 @@ h1{ font-size: 16px; margin:0; font-weight:700; }
 
 .bpInfo{
   display: grid;
-  gap: 6px;
+  gap: 2px;
   font-size: 12px;
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
 }
 
 .bpInfoRow{
   display: flex;
   gap: 6px;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
+  line-height: 1.3;
+}
+
+.bpInfoRow.bpRow{
+  position: relative;
+  padding-right: 34px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.bpRowMain{
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.bpInfoRow.bpRow .bpArrow{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .bpInfoLabel{
-  font-weight: 700;
-  opacity: .8;
+  font-weight: 600;
+  opacity: .7;
 }
 
 .bpInfoValue{
   font-family: var(--mono);
+  font-weight: 600;
+}
+
+.bpArrow{
+  font-weight: 800;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: #111;
+  border: 1px solid var(--border);
+  font-size: 16px;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.bpArrow.ok{
+  background: #BBF7D0;
+  --tooltip-bg: #BBF7D0;
+  --tooltip-border: #22C55E;
+}
+.bpArrow.warn{
+  background: #FDE68A;
+  --tooltip-bg: #FDE68A;
+  --tooltip-border: #F59E0B;
+}
+.bpArrow.bad{
+  background: #FECACA;
+  --tooltip-bg: #FECACA;
+  --tooltip-border: #EF4444;
+}
+
+.bpArrow .tooltipBox{
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  margin-right: 10px;
+  transform: translateY(-50%) translateX(-4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  border: 1px solid var(--tooltip-border, var(--border));
+  background-color: var(--tooltip-bg, var(--panel));
+  color: var(--text);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 8px 10px;
+  width: 300px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 10.5px;
+  mix-blend-mode: normal;
+  z-index: 3000;
+  background-clip: padding-box;
+}
+
+.bpArrow:hover .tooltipBox{
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.tooltipTitle{
+  display: block;
   font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.tooltipText{
+  display: block;
+  font-weight: 500;
+  line-height: 1.35;
+  margin-top: 4px;
+  font-size: 11px;
 }
 
 .medsTable{
@@ -717,13 +821,14 @@ input[type="range"]{
   margin-top: 6px;
   padding: 6px 8px;
   border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--panel);
+  border: 1px solid var(--tooltip-border, var(--border));
+  background: var(--tooltip-bg, var(--panel));
   color: var(--text);
   box-shadow: var(--shadow);
   font-size: 12px;
   line-height: 1.2;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 240px;
   opacity: 0;
   transform: translateY(4px);
   pointer-events: none;
@@ -738,8 +843,8 @@ input[type="range"]{
   top: 100%;
   margin-top: 2px;
   border: 6px solid transparent;
-  border-bottom-color: var(--panel);
-  filter: drop-shadow(0 -1px 0 var(--border));
+  border-bottom-color: var(--tooltip-bg, var(--panel));
+  filter: drop-shadow(0 -1px 0 var(--tooltip-border, var(--border)));
   opacity: 0;
   transform: translateY(4px);
   pointer-events: none;
@@ -751,6 +856,32 @@ input[type="range"]{
 .tooltipTrigger:hover::before{
   opacity: 1;
   transform: translateY(0);
+}
+
+.tooltipLeft::after{
+  right: 100%;
+  left: auto;
+  top: 50%;
+  margin-right: 8px;
+  margin-top: 0;
+  transform: translateY(-50%) translateX(-4px);
+}
+
+.tooltipLeft::before{
+  right: 100%;
+  left: auto;
+  top: 50%;
+  margin-right: 2px;
+  margin-top: 0;
+  border-left-color: var(--tooltip-bg, var(--panel));
+  border-bottom-color: transparent;
+  filter: drop-shadow(-1px 0 0 var(--tooltip-border, var(--border)));
+  transform: translateY(-50%) translateX(-4px);
+}
+
+.tooltipLeft:hover::after,
+.tooltipLeft:hover::before{
+  transform: translateY(-50%) translateX(0);
 }
 
 .badge{
@@ -804,7 +935,7 @@ input[type="range"]{
 
 .medReset.active{ background: rgba(0,0,0,0.03); }
 
-/* Scrollbar (ładniejszy) */
+/* Scrollbar (Ĺ‚adniejszy) */
 .cardBodyScroll,
 .listScroll{
   scrollbar-width: thin;
@@ -858,3 +989,4 @@ html[data-mode="light"] .listScroll::-webkit-scrollbar-thumb:hover{
   .summaryPanel{ grid-template-columns: 1fr; }
   .bpGrid{ grid-template-columns: 1fr; }
 }
+
