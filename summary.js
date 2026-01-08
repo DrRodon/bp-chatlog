@@ -269,6 +269,11 @@
     const settings = window.Theme.loadSettings();
     window.Theme.applyTheme(settings);
 
+    if(!window.Chart){
+      toast("Brak biblioteki Chart.js. Wykresy niedostepne offline.");
+      return;
+    }
+
     const all = loadItems();
     if(!all.length){
       toast("Brak danych. Najpierw dodaj wpisy w index.html.");

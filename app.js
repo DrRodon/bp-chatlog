@@ -70,15 +70,6 @@
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
   }
 
-  function classifyBP(sys, dia){
-    if(sys == null || dia == null) return {label:"-", cls:""};
-    if(sys >= 180 || dia >= 120) return {label:"bardzo wysokie", cls:"bad"};
-    if(sys >= 140 || dia >= 90) return {label:"wysokie", cls:"warn"};
-    if(sys >= 130 || dia >= 85) return {label:"podwyższone", cls:"warn"};
-    if(sys < 90 || dia < 60) return {label:"niskie", cls:"warn"};
-    return {label:"OK", cls:"ok"};
-  }
-
   function bpStatusInfo(sys, dia){
     if(sys == null || dia == null) return { cls: "", title: "Brak danych", explain: "", range: "" };
     if(sys >= 180 || dia >= 120){
@@ -310,15 +301,6 @@
         medsBox.innerHTML = rows.join("");
       }
     }
-  }
-
-  function appendLine(current, line){
-    const c = (current || "").trim();
-    const l = String(line || "").trim();
-    if(!l) return c;
-    if(!c) return l;
-    if(c.includes(l)) return c;
-    return c + "\n" + l;
   }
 
   function load(){

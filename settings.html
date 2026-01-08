@@ -178,15 +178,19 @@
 
         box.innerHTML = "";
         meds.forEach((m) => {
+          const safeName = escapeAttr(m.name || "-");
+          const safeDose = escapeAttr(m.dose || "");
+          const safeTime = escapeAttr(m.defaultTime || "");
           const tooltip = [m.name, m.dose, m.defaultTime].filter(Boolean).join(" | ");
+          const safeTooltip = escapeAttr(tooltip || m.name || "");
           const row = document.createElement("div");
           row.className = "medItem";
 
           const left = document.createElement("div");
           left.className = "left";
           left.innerHTML = `
-            <div class="name tooltipTrigger" data-tooltip="${escapeAttr(tooltip || m.name || "")}"><span class="medNameText">${m.name || "-"}</span></div>
-            <div class="hint">${m.dose || ""} ${m.defaultTime ? " | " + m.defaultTime : ""} | ${m.active ? "active" : "inactive"}</div>
+            <div class="name tooltipTrigger" data-tooltip="${safeTooltip}"><span class="medNameText">${safeName}</span></div>
+            <div class="hint">${safeDose}${safeTime ? " | " + safeTime : ""} | ${m.active ? "active" : "inactive"}</div>
           `;
 
           const right = document.createElement("div");
