@@ -170,6 +170,19 @@ h1{ font-size: 16px; margin:0; font-weight:700; }
   align-items:center;
 }
 
+.toggleLabel{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 650;
+  opacity: .9;
+}
+
+.toggleLabel input{
+  width: auto;
+}
+
 .dateRange{
   display:flex;
   gap: 10px;
@@ -213,6 +226,210 @@ h1{ font-size: 16px; margin:0; font-weight:700; }
   font-size: 12px;
   opacity: .92;
 }
+
+.summaryPanel{
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.summaryPanel > .summaryBlock{
+  height: 100%;
+}
+
+.summaryBlock.meds{
+  grid-column: auto;
+}
+
+.summaryBlock.bp{
+  grid-column: 1 / -1;
+}
+
+.summaryBlock.bp{
+  grid-column: 1 / -1;
+}
+
+.summaryBlock{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel2);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  justify-content: flex-start;
+}
+
+.summaryTitle{
+  font-size: 12px;
+  font-weight: 700;
+  opacity: .8;
+}
+
+.summaryValue{
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.summaryHint{
+  font-size: 12px;
+  opacity: .75;
+}
+
+.summaryBar{
+  height: 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.03);
+  overflow: hidden;
+}
+
+.summaryBarFill{
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.summaryChart{
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: .7;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 4px 6px;
+  background: rgba(0,0,0,0.02);
+}
+
+.summaryChart.hasChart{
+  border: 0;
+  background: transparent;
+  padding: 0;
+  opacity: 1;
+}
+
+.summaryChart svg{
+  width: 100%;
+  height: 80px;
+  display: block;
+}
+
+.chartLine{
+  fill: none;
+  stroke-width: 2;
+}
+
+.chartLine.sys{ stroke: #ef4444; }
+.chartLine.dia{ stroke: #f59e0b; }
+.chartLine.pulse{ stroke: #3b82f6; }
+
+.summaryLegend{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  font-family: var(--mono);
+  opacity: .8;
+}
+
+.legendItem{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendItem::before{
+  content: "";
+  width: 10px;
+  height: 2px;
+  background: currentColor;
+  display: inline-block;
+}
+
+.legendItem.sys{ color: #ef4444; }
+.legendItem.dia{ color: #f59e0b; }
+.legendItem.pulse{ color: #3b82f6; }
+
+.bpGrid{
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.bpChartCol{
+  display: grid;
+  gap: 6px;
+}
+
+.bpInfo{
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.bpInfoRow{
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.bpInfoLabel{
+  font-weight: 700;
+  opacity: .8;
+}
+
+.bpInfoValue{
+  font-family: var(--mono);
+  font-weight: 700;
+}
+
+.medsTable{
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.medsRow{
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.medsRow.head{
+  font-weight: 700;
+  opacity: .7;
+}
+
+.medsCell{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.medsStat{
+  font-family: var(--mono);
+  font-size: 12px;
+  text-align: center;
+  min-width: 28px;
+  padding: 2px 4px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.03);
+}
+
+.medsStat.ok{ background: var(--okSoft); border-color: rgba(5,150,105,.35); }
+.medsStat.warn{ background: var(--warnSoft); border-color: rgba(217,119,6,.35); }
+.medsStat.bad{ background: var(--badSoft); border-color: rgba(220,38,38,.35); }
 
 .small{ font-size: 12px; opacity: .75; }
 .muted{ opacity: .72; }
@@ -619,4 +836,6 @@ html[data-mode="light"] .listScroll::-webkit-scrollbar-thumb:hover{
   .grid{ grid-template-columns: 1fr; }
   .gridViewport{ height: auto; }
   .cardBodyScroll, .listScroll{ overflow: visible; padding-right: 0; }
+  .summaryPanel{ grid-template-columns: 1fr; }
+  .bpGrid{ grid-template-columns: 1fr; }
 }

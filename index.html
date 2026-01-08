@@ -214,6 +214,10 @@
             <button id="todayBtn" type="button" class="secondary">Dziś</button>
             <button id="allBtn" type="button" class="secondary">Wszystko</button>
           </div>
+          <label class="toggleLabel">
+            <input id="showMetrics" type="checkbox" />
+            Pokaż wpisy metryczne
+          </label>
         </div>
 
         <div class="btns" style="margin-top:6px;">
@@ -224,7 +228,36 @@
           </select>
         </div>
 
-        <div class="pill">Średnie z widoku: <strong id="avgPill">-</strong></div>
+        <div class="summaryPanel" id="viewSummary">
+          <div class="summaryBlock">
+            <div class="summaryTitle">Nawodnienie (widok)</div>
+            <div class="summaryValue"><span id="waterTotal">-</span> / <span id="waterTarget">-</span> ml</div>
+            <div class="summaryHint" id="waterDays">- dni</div>
+            <div class="summaryBar">
+              <div class="summaryBarFill" id="waterBar"></div>
+            </div>
+          </div>
+
+          <div class="summaryBlock meds">
+            <div class="summaryTitle">Leki (widok)</div>
+            <div class="medsTable" id="medsSummary"></div>
+          </div>
+
+          <div class="summaryBlock bp">
+            <div class="summaryTitle">Ciśnienie i puls</div>
+            <div class="bpGrid">
+              <div class="bpChartCol">
+                <div class="summaryChart" id="bpPulseChart">Brak danych w widoku.</div>
+                <div class="summaryLegend">
+                  <span class="legendItem sys">SYS</span>
+                  <span class="legendItem dia">DIA</span>
+                  <span class="legendItem pulse">P</span>
+                </div>
+              </div>
+              <div class="bpInfo" id="bpPulseInfo">-</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="listScroll">
