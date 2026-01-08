@@ -288,9 +288,17 @@
         const nameById = new Map(catalog.map(m => [m.id, m]));
 
         const rows = [];
+        const toTitleCase = (s) => {
+          const base = String(s || "").replace(/[-_]+/g, " ").trim();
+          if(!base) return "";
+          return base.split(" ").map(w => w ? (w[0].toUpperCase() + w.slice(1)) : "").join(" ");
+        };
         for(const [id, v] of stats.entries()){
           const m = nameById.get(id);
-          const name = m ? `${m.name}${m.dose ? " " + m.dose : ""}` : id;
+          const rawName = m ? (m.name || "") : "";
+          const hasUpper = /[A-Z]/.test(rawName);
+          const pretty = rawName ? (hasUpper ? rawName : toTitleCase(rawName)) : toTitleCase(id);
+          const name = pretty ? `${pretty}${m && m.dose ? " " + m.dose : ""}` : id;
           rows.push(
             `<div class="medsRow">
               <div class="medsCell">${escapeHtml(name)}</div>
