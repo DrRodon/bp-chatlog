@@ -53,7 +53,11 @@
     <section class="card cardScroll" id="formCard">
       <div class="cardHead">
         <h2 id="formTitle">Dodaj wpis</h2>
-        <span class="pill">Wpisów: <strong id="countPill">0</strong></span>
+        <div class="cardHeadActions">
+          <button id="saveBtn" class="ok" type="button">Zapisz</button>
+          <button id="resetBtn" class="secondary" type="button">Wyczyść formularz</button>
+          <span class="pill">Wpisów: <strong id="countPill">0</strong></span>
+        </div>
       </div>
 
       <div class="cardBodyScroll">
@@ -196,8 +200,6 @@
           <textarea id="hypothesis" placeholder="np. pominąłem dawkę + słabe nawodnienie"></textarea>
         </div>
         <div class="btns">
-          <button id="saveBtn" class="ok" type="button">Zapisz</button>
-          <button id="resetBtn" class="secondary" type="button">Wyczyść formularz</button>
           <button id="cancelEditBtn" class="secondary hidden" type="button">Anuluj edycję</button>
         </div>
       </div>
