@@ -819,17 +819,6 @@
       }
     });
 
-    document.querySelectorAll(".chipbtn").forEach(btn => {
-      btn.onclick = () => {
-        const token = btn.dataset.addsym;
-        if(!token) return;
-        const cur = el("symptoms").value.trim();
-        if(!cur) { el("symptoms").value = token; return; }
-        if(cur.toLowerCase().includes(token.toLowerCase())) return;
-        el("symptoms").value = cur + ", " + token;
-      };
-    });
-
     el("q").addEventListener("input", render);
     el("sort").addEventListener("change", render);
     el("fromDate").addEventListener("change", render);
