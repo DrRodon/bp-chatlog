@@ -614,6 +614,16 @@ input, select, textarea{
   font-size: 13px;
 }
 
+html[data-mode="dark"] select{
+  color-scheme: dark;
+}
+
+html[data-mode="dark"] select option,
+html[data-mode="dark"] select optgroup{
+  background-color: var(--panel);
+  color: var(--text);
+}
+
 textarea{ min-height: 86px; resize: vertical; }
 
 .row{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
